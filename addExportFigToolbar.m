@@ -12,8 +12,8 @@ end
 for idx = 0:length(fig.Children)
     if idx
         if strcmp(fig.Children(idx).Tag, 'exportFigToolbar')
-            % Toolbar already exists so don't draw another 
-           return
+            % Toolbar already exists so don't draw another
+            return
         end
     end
 end
@@ -35,7 +35,7 @@ iconRed = cat(3,saveimg(:,:,3), saveimg(:,:,2), saveimg(:,:,1));
 iconGreen = cat(3,saveimg(:,:,1), saveimg(:,:,3), saveimg(:,:,2));
 iconYellow = cat(3,saveimg(:,:,3), saveimg(:,:,3), saveimg(:,:,2));
 
-% Add toggle buttons to toolbar for saving to each format 
+% Add toggle buttons to toolbar for saving to each format
 % Note: Tag should be file extension w/out leading "." -
 % it can contain number identifiers though (png1, png2, etc.) which will be
 % stripped later
@@ -51,39 +51,39 @@ svg_button = uitoggletool(tbar, ...
     'Tag', 'svg1' ); %file extension w/optional number
 %pdf
 pdf_button = uitoggletool(tbar, ...
-    'CData', iconBlue, ... 
+    'CData', iconBlue, ...
     'TooltipString', 'Export .pdf', ...
     'Tag', 'pdf1' ); %file extension w/optional number
 
-%{ 
+%{
 %eps
 eps_button = uitoggletool(tbar, ...
-    'CData', iconYellow, ... 
+    'CData', iconYellow, ...
     'TooltipString', 'Export .eps', ...
     'Tag', 'eps1' ); %file extension w/optional number
-%}
+    %}
     
-% Set a common callback for all buttons (which is where customized
-% export settings should be added)
-set( [...
-    png_button, ...
-    svg_button, ...
-    pdf_button ...
-    ], ...
-    'ClickedCallback', @(src, evt) buttonCallback(fig, src, evt),...
-    'HandleVisibility', 'off', ...
-    'Interruptible', 'off', ...
-    'BusyAction', 'cancel' );
-
-% Assign buttons to gui's user data so we can retrieve it in callback function:
-udata.([png_button.Tag '_button']) = png_button;
-udata.([svg_button.Tag '_button']) = svg_button;
-udata.([pdf_button.Tag '_button']) = pdf_button;
-% udata.([eps_button.Tag 'button']) = eps_button;
-
-% Set the userdata
-set(fig, 'UserData', udata);
-
+    % Set a common callback for all buttons (which is where customized
+    % export settings should be added)
+    set( [...
+        png_button, ...
+        svg_button, ...
+        pdf_button ...
+        ], ...
+        'ClickedCallback', @(src, evt) buttonCallback(fig, src, evt),...
+        'HandleVisibility', 'off', ...
+        'Interruptible', 'off', ...
+        'BusyAction', 'cancel' );
+    
+    % Assign buttons to gui's user data so we can retrieve it in callback function:
+    udata.([png_button.Tag '_button']) = png_button;
+    udata.([svg_button.Tag '_button']) = svg_button;
+    udata.([pdf_button.Tag '_button']) = pdf_button;
+    % udata.([eps_button.Tag 'button']) = eps_button;
+    
+    % Set the userdata
+    set(fig, 'UserData', udata);
+    
 end
 
 function buttonCallback(fig,src,~)
@@ -101,31 +101,36 @@ assert(ischar(filename),'Bad filename type. Should be a string of characters')
 originalColor = get(fig,'color');
 
 % Apply some common settings for all formats:
-%set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax background colors displayed on screen
+set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax background colors displayed on screen
+
+switch src.Tag
+    % Export with desired settings for each format
     
-    switch src.Tag
-        % Export with desired settings for each format
-        
-        case 'png1'
-            % Transparent background with export_fig:
-            %{
+    case 'png1'
+        % Transparent background with export_fig:
+        %{
             set(fig,'color','none');
             export_fig(fullSavePath , '-dpng','-r400','-q100','-opengl',gcf);
-            %}
-            print(fig, fullfile(pathname,filename) , '-dpng','-r400');
-
-        case 'svg1'
-            d = msgbox('Hang on, this may take a minute..','Saving .svg','help');
-            print(fig, fullfile(pathname,filename) , '-dsvg','-painters');
-            close(d)
-
-        case 'pdf1'
-            d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
-            % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
-            print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
-            close(d)
-
-    end
+        %}
+        print(fig, fullfile(pathname,filename) , '-dpng','-r400');
+        
+    case 'svg1'
+        d = msgbox('Hang on, this may take a minute..','Saving .svg','help');
+        print(fig, fullfile(pathname,filename) , '-dsvg','-painters');
+        close(d)
+        
+    case 'pdf1'
+        d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
+        % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
+        print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
+        close(d)
+        
+    case 'eps1'        
+        d = msgbox('Hang on, this may take a minute..','Saving eps','help');
+        % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
+        
+        
+end
 
 % Reapply figure color in case it was removed
 if exist('originalColor','var')
