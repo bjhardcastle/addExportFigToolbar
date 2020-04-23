@@ -1,9 +1,8 @@
 # addExportFigToolbar
-Add a toolbar to Matlab figures with shortcuts for quick exporting
 
-Sometimes you just want a simple way to quickly export a figure 'the right way'. 
+Sometimes you just want to quickly export a figure "the right way". 
 
-This function adds a toolbar with a few buttons which can be assigned to your current export methods of choice.
+This function adds a toolbar with a few buttons which can be assigned to your current export settings of choice.
 >![screenshot.png](screenshot.png)
 
 
