@@ -101,35 +101,44 @@ assert(ischar(filename),'Bad filename type. Should be a string of characters')
 originalColor = get(fig,'color');
 
 % Apply some common settings for all formats:
-set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax background colors displayed on screen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax bkground colors on screen
 
 switch src.Tag
     % Export with desired settings for each format
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     case 'png1'
         % Transparent background with export_fig:
         %{
-            set(fig,'color','none');
-            export_fig(fullSavePath , '-dpng','-r400','-q100','-opengl',gcf);
+        set(fig,'color','none');
+        export_fig(fullSavePath , '-dpng','-r400','-q100','-opengl',gcf);
         %}
         print(fig, fullfile(pathname,filename) , '-dpng','-r400');
-        
+    
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     case 'svg1'
         d = msgbox('Hang on, this may take a minute..','Saving .svg','help');
         print(fig, fullfile(pathname,filename) , '-dsvg','-painters');
         close(d)
         
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     case 'pdf1'
         d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
         % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
         print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
         close(d)
         
-    case 'eps1'        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    case 'eps1'
         d = msgbox('Hang on, this may take a minute..','Saving eps','help');
-        % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
+        print(fig, fullfile(pathname,filename) , '-depsc','-painters');
+        %epsclean(fullfile(pathname,filename));
         
-        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
 % Reapply figure color in case it was removed
