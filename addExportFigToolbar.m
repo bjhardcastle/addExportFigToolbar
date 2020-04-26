@@ -95,55 +95,57 @@ udata = get(fig,'UserData');
 % Get save location (defaults to what should be a unique filename)
 fileExt = src.Tag(isletter(src.Tag));
 [filename, pathname] = uiputfile(['.',fileExt],'Save image as...', char(datetime('now','Format','yyMMddHHmmss')) );
-assert(ischar(filename),'Bad filename type. Should be a string of characters')
-
-% Get current figure color in case we change it:
-originalColor = get(fig,'color');
-
-% Apply some common settings for all formats:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax bkground colors on screen
-
-switch src.Tag
-    % Export with desired settings for each format
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if ischar(filename)
     
-    case 'png1'
-        % Transparent background with export_fig:
-        %{
+    % Get current figure color in case we change it:
+    originalColor = get(fig,'color');
+    
+    % Apply some common settings for all formats:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %set(fig, 'InvertHardCopy', 'off'); % keeps fig/ax bkground colors on screen
+    
+    switch src.Tag
+        % Export with desired settings for each format
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        case 'png1'
+            % Transparent background with export_fig:
+            %{
         set(fig,'color','none');
         export_fig(fullSavePath , '-dpng','-r400','-q100','-opengl',gcf);
-        %}
-        print(fig, fullfile(pathname,filename) , '-dpng','-r400');
+            %}
+            print(fig, fullfile(pathname,filename) , '-dpng','-r400');
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+        case 'svg1'
+            d = msgbox('Hang on, this may take a minute..','Saving .svg','help');
+            print(fig, fullfile(pathname,filename) , '-dsvg','-painters');
+            close(d)
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+        case 'pdf1'
+            d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
+            % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
+            print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
+            close(d)
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+        case 'eps1'
+            d = msgbox('Hang on, this may take a minute..','Saving eps','help');
+            print(fig, fullfile(pathname,filename) , '-depsc','-painters');
+            %epsclean(fullfile(pathname,filename));
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end
     
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Reapply figure color in case it was removed
+    if exist('originalColor','var')
+        set(fig,'color',originalColor);
+    end
     
-    case 'svg1'
-        d = msgbox('Hang on, this may take a minute..','Saving .svg','help');
-        print(fig, fullfile(pathname,filename) , '-dsvg','-painters');
-        close(d)
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    case 'pdf1'
-        d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
-        % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
-        print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
-        close(d)
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    case 'eps1'
-        d = msgbox('Hang on, this may take a minute..','Saving eps','help');
-        print(fig, fullfile(pathname,filename) , '-depsc','-painters');
-        %epsclean(fullfile(pathname,filename));
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-end
-
-% Reapply figure color in case it was removed
-if exist('originalColor','var')
-    set(fig,'color',originalColor);
 end
 
 % Reset button to be used again
