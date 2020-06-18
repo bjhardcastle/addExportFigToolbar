@@ -112,7 +112,7 @@ if ischar(filename)
             % Transparent background with export_fig:
             %{
         set(fig,'color','none');
-        export_fig(fullSavePath , '-dpng','-r400','-q100','-opengl',gcf);
+        export_fig(fullfile(pathname,filename) , '-dpng','-r400','-q100','-opengl',fig);
             %}
             print(fig, fullfile(pathname,filename) , '-dpng','-r400');
             
@@ -127,7 +127,7 @@ if ischar(filename)
             
         case 'pdf1'
             d = msgbox('Hang on, this may take a minute..','Saving .pdf','help');
-            % export_fig(fullSavePath , '-dpdf','-painters','-transparent',gcf);
+            % export_fig(fullfile(pathname,filename) , '-dpdf','-painters','-transparent',fig);
             print(fig, fullfile(pathname,filename) , '-dpdf','-painters');
             close(d)
             
